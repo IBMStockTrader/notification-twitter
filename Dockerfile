@@ -12,6 +12,9 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-FROM websphere-liberty:microProfile
+# Temporary fix to work around missing jms stuff
+FROM websphere-liberty:javaee7
+# Temporary removal
+#FROM websphere-liberty:microProfile
 COPY server.xml /config/server.xml
 COPY target/loyalty-level-1.0-SNAPSHOT.war /config/apps/LoyaltyLevel.war
