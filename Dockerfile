@@ -14,7 +14,8 @@
 
 # Temporary fix to work around missing jms stuff
 FROM websphere-liberty:javaee7
-# Temporary removal
+# Temporary removal, renable when microprofile 1.1 ships
+# add add installUtility stanza to install wasJmsClient-2.0
 #FROM websphere-liberty:microProfile
 COPY server.xml /config/server.xml
 COPY target/loyalty-level-1.0-SNAPSHOT.war /config/apps/LoyaltyLevel.war
