@@ -16,7 +16,15 @@
 
 package com.ibm.hybrid.cloud.sample.portfolio;
 
-//JMS
+//Standard HTTP request classes.  Maybe replace these with use of JAX-RS 2.0 client package instead...
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Base64;
+
+//JMS 2.0
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
@@ -50,6 +58,10 @@ import javax.ws.rs.Path;
  *  Also send a notification when status changes for a given user.
  */
 public class LoyaltyLevel extends Application {
+	private static final String OPENWHISK_ACTION   = "https://openwhisk.ng.bluemix.net/api/v1/namespaces/jalcorn%40us.ibm.com_dev/actions/PostLoyaltyLevelToSlack";
+	private static final String OPENWHISK_USER     = "bc2b0a37-0554-4658-9ebe-ae068eb1aa22";
+	private static final String OPENWHISK_PASSWORD = "45t2FZC1q1bv6OYUztZUjkYFaVNs5klaviHoE6gFvgEedu9akiE1YW6lChOxUgJb";
+
 	private static final String NOTIFICATION_Q   = "jms/Portfolio/NotificationQueue";
 	private static final String NOTIFICATION_QCF = "jms/Portfolio/NotificationQueueConnectionFactory";
 
@@ -75,12 +87,15 @@ public class LoyaltyLevel extends Application {
 		}
 
 		if (!loyalty.equals(oldLoyalty)) try {
-			JsonObjectBuilder message = Json.createObjectBuilder();
-			message.add("owner", owner);
-			message.add("old", oldLoyalty);
-			message.add("new", loyalty);
+			JsonObjectBuilder builder = Json.createObjectBuilder();
+			builder.add("owner", owner);
+			builder.add("old", oldLoyalty);
+			builder.add("new", loyalty);
 
-			invokeJMS(message.build());
+			JsonObject message = builder.build();
+
+//			invokeJMS(message);
+			invokeREST("POST", OPENWHISK_ACTION, message.toString(), OPENWHISK_USER, OPENWHISK_PASSWORD);
 		} catch (Throwable t) { //in case MQ is not configured, just log the exception and continue
 			t.printStackTrace();
 		}
@@ -119,5 +134,36 @@ public class LoyaltyLevel extends Application {
 		sender.close();
 		session.close();
 		connection.close();
+	}
+
+	private static JsonObject invokeREST(String verb, String uri, String input, String user, String password) throws IOException {
+		URL url = new URL(uri);
+
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod(verb);
+		conn.setRequestProperty("Content-Type", "application/json");
+		conn.setDoOutput(true);
+
+		if ((user != null) && (password != null)) {
+			String credentials = user + ":" + password;
+			String authorization = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
+			conn.setRequestProperty("Authorization", authorization);
+		}
+
+		if (input != null) {
+			OutputStream body = conn.getOutputStream();
+			body.write(input.getBytes());
+			body.flush();
+			body.close();
+		}
+
+		InputStream stream = conn.getInputStream();
+
+//		JSONObject json = JSONObject.parse(stream); //JSON4J
+		JsonObject json = Json.createReader(stream).readObject();
+
+		stream.close();
+
+		return json;
 	}
 }
