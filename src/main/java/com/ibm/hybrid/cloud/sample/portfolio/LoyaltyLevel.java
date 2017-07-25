@@ -94,8 +94,8 @@ public class LoyaltyLevel extends Application {
 
 			JsonObject message = builder.build();
 
-//			invokeJMS(message);
 			invokeREST("POST", OPENWHISK_ACTION, message.toString(), OPENWHISK_USER, OPENWHISK_PASSWORD);
+			invokeJMS(message);
 		} catch (Throwable t) { //in case MQ is not configured, just log the exception and continue
 			t.printStackTrace();
 		}
