@@ -14,6 +14,6 @@
 
 FROM websphere-liberty:microProfile
 COPY server.xml /config/server.xml
-COPY wmq.jmsra.rar /config/wmq.jmsra.rar #MQ JMS/JCA resource adapter
+COPY wmq.jmsra.rar /config/wmq.jmsra.rar
 COPY target/loyalty-level-1.0-SNAPSHOT.war /config/apps/LoyaltyLevel.war
 RUN installUtility install --acceptLicense defaultServer
