@@ -28,6 +28,16 @@ spec:
       - name: loyalty-level
         image: loyalty-level:latest
         env:
+          - name: MQ_ID
+            valueFrom:
+              secretKeyRef:
+                name: mq
+                key: id
+          - name: MQ_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mq   
+                key: pwd
           - name: MQ_HOST
             valueFrom:
               secretKeyRef:
