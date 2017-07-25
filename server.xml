@@ -10,8 +10,10 @@
 
     <httpEndpoint httpPort="9080" httpsPort="9443" host="*" id="defaultHttpEndpoint"/>
 
+    <authData id="MQ-Credentials" user="${env.MQ_ID}" password="${env.MQ_PASSWORD}"></authData>
+
     <variable name="wmqJmsClient.rar.location" value="/config/wmq.jmsra.rar" />
-    <jmsQueueConnectionFactory id="NotificationQCF" jndiName="jms/Portfolio/NotificationQueueConnectionFactory">
+    <jmsQueueConnectionFactory id="NotificationQCF" jndiName="jms/Portfolio/NotificationQueueConnectionFactory" containerAuthDataRef="MQ-Credentials">
         <properties.wmqJms 
             transportType="CLIENT"
             hostName="${env.MQ_HOST}" 
