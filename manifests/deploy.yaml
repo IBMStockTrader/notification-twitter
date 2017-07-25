@@ -27,6 +27,32 @@ spec:
       containers:
       - name: loyalty-level
         image: loyalty-level:latest
+        env:
+          - name: MQ_HOST
+            valueFrom:
+              secretKeyRef:
+                name: mq
+                key: host
+          - name: MQ_PORT
+            valueFrom:
+              secretKeyRef:
+                name: mq   
+                key: port
+          - name: MQ_CHANNEL
+            valueFrom:
+              secretKeyRef:
+                name: mq   
+                key: channel
+          - name: MQ_QUEUE_MANAGER
+            valueFrom:
+              secretKeyRef:
+                name: mq   
+                key: queue-manager
+          - name: MQ_QUEUE
+            valueFrom:
+              secretKeyRef:
+                name: mq   
+                key: queue
         ports:
           - containerPort: 9080
         imagePullPolicy: IfNotPresent
