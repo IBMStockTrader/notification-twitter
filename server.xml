@@ -11,14 +11,14 @@
     <httpEndpoint httpPort="9080" httpsPort="9443" host="*" id="defaultHttpEndpoint"/>
 
     <variable name="wmqJmsClient.rar.location" value="/config/wmq.jmsra.rar" />
-    <jmsConnectionFactory id="NotificationQCF" jndiName="jms/Portfolio/NotificationQueueConnectionFactory">
+    <jmsQueueConnectionFactory id="NotificationQCF" jndiName="jms/Portfolio/NotificationQueueConnectionFactory">
         <properties.wmqJms 
             transportType="CLIENT"
             hostName="${env.MQ_HOST}" 
             port="${env.MQ_PORT}"
             channel="${env.MQ_CHANNEL}"
             queueManager="${env.MQ_QUEUE_MANAGER}"/>
-    </jmsConnectionFactory>
+    </jmsQueueConnectionFactory>
     <jmsQueue id="NotificationQ" jndiName="jms/Portfolio/NotificationQueue">
         <properties.wmqJms baseQueueName="${env.MQ_QUEUE}" baseQueueManagerName="${env.MQ_QUEUE_MANAGER}"/>
     </jmsQueue>
