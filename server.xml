@@ -1,5 +1,4 @@
 <server description="Stock Quote server">
-    <!-- Enable features -->
     <featureManager>
         <feature>microProfile-1.0</feature>
         <feature>jndi-1.0</feature>
