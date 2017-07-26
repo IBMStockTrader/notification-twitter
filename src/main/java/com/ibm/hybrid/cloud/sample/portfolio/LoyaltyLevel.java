@@ -96,6 +96,10 @@ public class LoyaltyLevel extends Application {
 
 			invokeREST("POST", OPENWHISK_ACTION, message.toString(), OPENWHISK_USER, OPENWHISK_PASSWORD);
 			invokeJMS(message);
+		} catch (JMSException jms) { //in case MQ is not configured, just log the exception and continue
+			jms.printStackTrace();
+			Exception linked = jms.getLinkedException();
+			if (linked != null) linked.printStackTrace();
 		} catch (Throwable t) { //in case MQ is not configured, just log the exception and continue
 			t.printStackTrace();
 		}
@@ -105,7 +109,8 @@ public class LoyaltyLevel extends Application {
 		return loyaltyLevel.build();
 	}
 
-	/** Connect to the server, and lookup the managed resources. */
+	/** Connect to the server, and lookup the managed resources. 
+	 * @throws JMSException */
 	public void initialize() throws NamingException {
 		System.out.println("Getting the InitialContext");
 		InitialContext context = new InitialContext();
@@ -115,8 +120,16 @@ public class LoyaltyLevel extends Application {
 		queueCF = (QueueConnectionFactory) context.lookup(NOTIFICATION_QCF);
 		queue = (Queue) context.lookup(NOTIFICATION_Q);
 
+		System.out.println("MQ_HOST="+System.getenv("MQ_HOST"));
+		System.out.println("MQ_PORT="+System.getenv("MQ_PORT"));
+		System.out.println("MQ_CHANNEL="+System.getenv("MQ_CHANNEL"));
+		System.out.println("MQ_QUEUE_MANAGER="+System.getenv("MQ_QUEUE_MANAGER"));
+		System.out.println("MQ_QUEUE="+System.getenv("MQ_QUEUE"));
+		System.out.println("MQ_ID="+System.getenv("MQ_ID"));
+		System.out.println("MQ_PASSWORD="+System.getenv("MQ_PASSWORD"));
+
 		initialized = true;
-		System.out.println("Initialization completed");
+		System.out.println("Initialization completed successfully!");
 	}
 
 	/** Send a JSON message to our notification queue.
@@ -128,12 +141,15 @@ public class LoyaltyLevel extends Application {
 		QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 
 		TextMessage message = session.createTextMessage(json.toString());
+		System.out.println("Sending "+json.toString()+" to "+queue.getQueueName());
 		QueueSender sender = session.createSender(queue);
 		sender.send(message);
 
 		sender.close();
 		session.close();
 		connection.close();
+
+		System.out.println("Message sent successfully!");
 	}
 
 	private static JsonObject invokeREST(String verb, String uri, String input, String user, String password) throws IOException {
