@@ -16,14 +16,6 @@
 
 package com.ibm.hybrid.cloud.sample.portfolio;
 
-//Standard HTTP request classes.  Maybe replace these with use of JAX-RS 2.0 client package instead...
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Base64;
-
 //JMS 2.0
 import javax.jms.JMSException;
 import javax.jms.Queue;
@@ -58,10 +50,6 @@ import javax.ws.rs.Path;
  *  Also send a notification when status changes for a given user.
  */
 public class LoyaltyLevel extends Application {
-	private static final String OPENWHISK_ACTION   = "https://openwhisk.ng.bluemix.net/api/v1/namespaces/jalcorn%40us.ibm.com_dev/actions/PostLoyaltyLevelToSlack";
-	private static final String OPENWHISK_USER     = "bc2b0a37-0554-4658-9ebe-ae068eb1aa22";
-	private static final String OPENWHISK_PASSWORD = "45t2FZC1q1bv6OYUztZUjkYFaVNs5klaviHoE6gFvgEedu9akiE1YW6lChOxUgJb";
-
 	private static final String NOTIFICATION_Q   = "jms/Portfolio/NotificationQueue";
 	private static final String NOTIFICATION_QCF = "jms/Portfolio/NotificationQueueConnectionFactory";
 
@@ -94,7 +82,6 @@ public class LoyaltyLevel extends Application {
 
 			JsonObject message = builder.build();
 
-			invokeREST("POST", OPENWHISK_ACTION, message.toString(), OPENWHISK_USER, OPENWHISK_PASSWORD);
 			invokeJMS(message);
 		} catch (JMSException jms) { //in case MQ is not configured, just log the exception and continue
 			jms.printStackTrace();
@@ -120,14 +107,6 @@ public class LoyaltyLevel extends Application {
 		queueCF = (QueueConnectionFactory) context.lookup(NOTIFICATION_QCF);
 		queue = (Queue) context.lookup(NOTIFICATION_Q);
 
-		System.out.println("MQ_HOST="+System.getenv("MQ_HOST"));
-		System.out.println("MQ_PORT="+System.getenv("MQ_PORT"));
-		System.out.println("MQ_CHANNEL="+System.getenv("MQ_CHANNEL"));
-		System.out.println("MQ_QUEUE_MANAGER="+System.getenv("MQ_QUEUE_MANAGER"));
-		System.out.println("MQ_QUEUE="+System.getenv("MQ_QUEUE"));
-		System.out.println("MQ_ID="+System.getenv("MQ_ID"));
-		System.out.println("MQ_PASSWORD="+System.getenv("MQ_PASSWORD"));
-
 		initialized = true;
 		System.out.println("Initialization completed successfully!");
 	}
@@ -150,36 +129,5 @@ public class LoyaltyLevel extends Application {
 		connection.close();
 
 		System.out.println("Message sent successfully!");
-	}
-
-	private static JsonObject invokeREST(String verb, String uri, String input, String user, String password) throws IOException {
-		URL url = new URL(uri);
-
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestMethod(verb);
-		conn.setRequestProperty("Content-Type", "application/json");
-		conn.setDoOutput(true);
-
-		if ((user != null) && (password != null)) {
-			String credentials = user + ":" + password;
-			String authorization = "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes());
-			conn.setRequestProperty("Authorization", authorization);
-		}
-
-		if (input != null) {
-			OutputStream body = conn.getOutputStream();
-			body.write(input.getBytes());
-			body.flush();
-			body.close();
-		}
-
-		InputStream stream = conn.getInputStream();
-
-//		JSONObject json = JSONObject.parse(stream); //JSON4J
-		JsonObject json = Json.createReader(stream).readObject();
-
-		stream.close();
-
-		return json;
 	}
 }
