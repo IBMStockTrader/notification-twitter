@@ -60,6 +60,7 @@ public class LoyaltyLevel extends Application {
     @GET
     @Path("/")
 	@Produces("application/json")
+//	@RolesAllowed({"StockTrader", "StockViewer"}) //Couldn't get this to work; had to do it through the web.xml instead :(
 	public JsonObject getLoyalty(@QueryParam("owner") String owner, @QueryParam("loyalty") String oldLoyalty, @QueryParam("total") double total) {
 		JsonObjectBuilder loyaltyLevel = Json.createObjectBuilder();
 
@@ -93,12 +94,13 @@ public class LoyaltyLevel extends Application {
 
 		loyaltyLevel.add("owner", owner);
 		loyaltyLevel.add("loyalty", loyalty);
+
 		return loyaltyLevel.build();
 	}
 
 	/** Connect to the server, and lookup the managed resources. 
-	 * @throws JMSException */
-	public void initialize() throws NamingException {
+	 */
+	private void initialize() throws NamingException {
 		System.out.println("Getting the InitialContext");
 		InitialContext context = new InitialContext();
 
@@ -119,8 +121,12 @@ public class LoyaltyLevel extends Application {
 		QueueConnection connection = queueCF.createQueueConnection();
 		QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 
-		TextMessage message = session.createTextMessage(json.toString());
-		System.out.println("Sending "+json.toString()+" to "+queue.getQueueName());
+		String contents = json.toString();
+		TextMessage message = session.createTextMessage(contents);
+
+		System.out.println("Sending "+contents+" to "+queue.getQueueName());
+
+		//"mqclient" group needs "put" authority on the queue for next two lines to work
 		QueueSender sender = session.createSender(queue);
 		sender.send(message);
 
