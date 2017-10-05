@@ -11,6 +11,8 @@
 
     <keyStore id="defaultKeyStore" password="passw0rd"/>
 
+    <logging consoleLogLevel="INFO" traceSpecification="*=info"/>
+
     <authData id="MQ-Credentials" user="${env.MQ_ID}" password="${env.MQ_PASSWORD}"></authData>
 
     <resourceAdapter id="mq" location="/config/wmq.jmsra.rar"/>
