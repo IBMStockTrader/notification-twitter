@@ -13,7 +13,7 @@
 
     <authData id="MQ-Credentials" user="${env.MQ_ID}" password="${env.MQ_PASSWORD}"></authData>
 
-    <resourceAdapter id="mq" location="/Users/jalcorn/Documents/wmq/wmq.jmsra.rar"/>
+    <resourceAdapter id="mq" location="/config/wmq.jmsra.rar"/>
 
     <jmsQueueConnectionFactory id="NotificationQCF" jndiName="jms/Portfolio/NotificationQueueConnectionFactory" containerAuthDataRef="MQ-Credentials">
         <properties.mq 
