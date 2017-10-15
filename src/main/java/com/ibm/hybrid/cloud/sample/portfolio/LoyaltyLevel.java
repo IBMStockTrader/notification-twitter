@@ -36,6 +36,7 @@ import javax.ws.rs.Path;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
 
 
 @ApplicationPath("/")
@@ -81,7 +82,15 @@ public class LoyaltyLevel extends Application {
 	/** Get our Twitter object, and a date formatter 
 	 */
 	private void initialize() {
-		twitter = TwitterFactory.getSingleton(); //initialize twitter4j
+		ConfigurationBuilder builder = new ConfigurationBuilder();
+		builder.setDebugEnabled(true);
+		builder.setOAuthConsumerKey(System.getenv("TWITTER_CONSUMER_KEY"));
+		builder.setOAuthConsumerSecret(System.getenv("TWITTER_CONSUMER_SECRET"));
+		builder.setOAuthAccessToken(System.getenv("TWITTER_ACCESS_TOKEN"));
+		builder.setOAuthAccessTokenSecret(System.getenv("TWITTER_ACCESS_TOKEN_SECRET"));
+
+		TwitterFactory factory = new TwitterFactory(builder.build());
+		twitter = factory.getInstance(); //initialize twitter4j
 
 		//Example: Monday, October 16, 2017 at 3:45 PM
 		format = new SimpleDateFormat("EEEE, MMMM d, yyyy at h:mm a");
@@ -89,7 +98,7 @@ public class LoyaltyLevel extends Application {
 		initialized = true;
 	}
 
-	/** Tweet a message to our IBMStockTrader account.
+	/** Tweet a message to our @IBMStockTrader account.
 	 * @throws TwitterException 
 	 */
 	private void tweet(String owner, String oldLoyalty, String loyalty) throws TwitterException {
