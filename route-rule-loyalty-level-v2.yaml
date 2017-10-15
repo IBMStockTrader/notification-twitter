@@ -1,0 +1,12 @@
+type: route-rule
+name: loyalty-level-debug
+spec:
+  destination: loyalty-level.default.svc.cluster.local
+  precedence: 2
+  match:
+    httpHeaders:
+      cookie:
+        regex: "^(.*?;)?(user=debug)(;.*)?$"
+  route:
+  - tags:
+      version: v2
