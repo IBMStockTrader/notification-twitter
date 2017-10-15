@@ -23,46 +23,37 @@ spec:
     metadata:
       labels:
         app: loyalty-level
+        version: v2
     spec:
       containers:
       - name: loyalty-level
-        image: loyalty-level:latest
+        image: loyalty-level-v2:latest
         env:
-          - name: MQ_ID
+          - name: twitter4j.debug
             valueFrom:
               secretKeyRef:
-                name: mq
-                key: id
-          - name: MQ_PASSWORD
+                name: twitter
+                key: debug
+          - name: twitter4j.oauth.consumerKey
             valueFrom:
               secretKeyRef:
-                name: mq   
-                key: pwd
-          - name: MQ_HOST
+                name: twitter
+                key: consumerKey
+          - name: twitter4j.oauth.consumerSecret
             valueFrom:
               secretKeyRef:
-                name: mq
-                key: host
-          - name: MQ_PORT
+                name: twitter
+                key: consumerSecret
+          - name: twitter4j.oauth.accessToken
             valueFrom:
               secretKeyRef:
-                name: mq   
-                key: port
-          - name: MQ_CHANNEL
+                name: twitter
+                key: accessToken
+          - name: twitter4j.oauth.accessTokenSecret
             valueFrom:
               secretKeyRef:
-                name: mq   
-                key: channel
-          - name: MQ_QUEUE_MANAGER
-            valueFrom:
-              secretKeyRef:
-                name: mq   
-                key: queue-manager
-          - name: MQ_QUEUE
-            valueFrom:
-              secretKeyRef:
-                name: mq   
-                key: queue
+                name: twitter
+                key: accessTokenSecret
         ports:
           - containerPort: 9080
         imagePullPolicy: IfNotPresent

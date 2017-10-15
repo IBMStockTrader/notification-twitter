@@ -16,19 +16,8 @@
 
 package com.ibm.hybrid.cloud.sample.portfolio;
 
-//JMS 2.0
-import javax.jms.JMSException;
-import javax.jms.Queue;
-import javax.jms.QueueConnection;
-import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueSender;
-import javax.jms.QueueSession;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-
-//JNDI
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 //JSON-P (JSR 353).  The replaces my old usage of IBM's JSON4J (com.ibm.json.java.JSONObject)
 import javax.json.Json;
@@ -43,6 +32,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.Path;
 
+//Twitter for Java (Twitter4J)
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+
 
 @ApplicationPath("/")
 @Path("/")
@@ -50,12 +44,9 @@ import javax.ws.rs.Path;
  *  Also send a notification when status changes for a given user.
  */
 public class LoyaltyLevel extends Application {
-	private static final String NOTIFICATION_Q   = "jms/Portfolio/NotificationQueue";
-	private static final String NOTIFICATION_QCF = "jms/Portfolio/NotificationQueueConnectionFactory";
-
-	private Queue queue = null;
-	private QueueConnectionFactory queueCF = null;
 	private boolean initialized = false;
+	private SimpleDateFormat format = null;
+	private Twitter twitter = null;
 
     @GET
     @Path("/")
@@ -76,18 +67,7 @@ public class LoyaltyLevel extends Application {
 		}
 
 		if (!loyalty.equals(oldLoyalty)) try {
-			JsonObjectBuilder builder = Json.createObjectBuilder();
-			builder.add("owner", owner);
-			builder.add("old", oldLoyalty);
-			builder.add("new", loyalty);
-
-			JsonObject message = builder.build();
-
-			invokeJMS(message);
-		} catch (JMSException jms) { //in case MQ is not configured, just log the exception and continue
-			jms.printStackTrace();
-			Exception linked = jms.getLinkedException();
-			if (linked != null) linked.printStackTrace();
+			tweet(owner, oldLoyalty, loyalty);
 		} catch (Throwable t) { //in case MQ is not configured, just log the exception and continue
 			t.printStackTrace();
 		}
@@ -98,42 +78,28 @@ public class LoyaltyLevel extends Application {
 		return loyaltyLevel.build();
 	}
 
-	/** Connect to the server, and lookup the managed resources. 
+	/** Get our Twitter object, and a date formatter 
 	 */
-	private void initialize() throws NamingException {
-		System.out.println("Getting the InitialContext");
-		InitialContext context = new InitialContext();
+	private void initialize() {
+		twitter = TwitterFactory.getSingleton(); //initialize twitter4j
 
-		//lookup our JMS objects
-		System.out.println("Looking up our JMS resources");
-		queueCF = (QueueConnectionFactory) context.lookup(NOTIFICATION_QCF);
-		queue = (Queue) context.lookup(NOTIFICATION_Q);
+		//Example: Monday, October 16, 2017 at 3:45 PM
+		format = new SimpleDateFormat("EEEE, MMMM d, yyyy at h:mm a");
 
 		initialized = true;
-		System.out.println("Initialization completed successfully!");
 	}
 
-	/** Send a JSON message to our notification queue.
+	/** Tweet a message to our IBMStockTrader account.
+	 * @throws TwitterException 
 	 */
-	public void invokeJMS(JsonObject json) throws JMSException, NamingException {
-		if (!initialized) initialize(); //gets our JMS managed resources (Q and QCF)
+	private void tweet(String owner, String oldLoyalty, String loyalty) throws TwitterException {
+		if (!initialized) initialize();
 
-		QueueConnection connection = queueCF.createQueueConnection();
-		QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+		Date now = new Date();
+		String message = "On "+format.format(now)+", "+owner+" changed status from "+oldLoyalty+" to "+loyalty+". #IBMStockTrader";
 
-		String contents = json.toString();
-		TextMessage message = session.createTextMessage(contents);
+		twitter.updateStatus(message);
 
-		System.out.println("Sending "+contents+" to "+queue.getQueueName());
-
-		//"mqclient" group needs "put" authority on the queue for next two lines to work
-		QueueSender sender = session.createSender(queue);
-		sender.send(message);
-
-		sender.close();
-		session.close();
-		connection.close();
-
-		System.out.println("Message sent successfully!");
+		System.out.println("Message tweeted successfully!");
 	}
 }

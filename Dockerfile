@@ -12,7 +12,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-FROM openliberty/open-liberty:javaee7
+FROM openliberty/open-liberty:microProfile1
 COPY server.xml /config/server.xml
-COPY wmq.jmsra.rar /config/wmq.jmsra.rar
 COPY target/loyalty-level-1.0-SNAPSHOT.war /config/apps/LoyaltyLevel.war

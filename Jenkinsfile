@@ -1,4 +1,4 @@
 @Library('MicroserviceBuilder') _
 microserviceBuilderPipeline {
-  image = 'loyalty-level'
+  image = 'loyalty-level-v2'
 }
