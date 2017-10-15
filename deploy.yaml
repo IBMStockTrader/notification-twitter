@@ -29,27 +29,22 @@ spec:
       - name: loyalty-level
         image: loyalty-level-v2:latest
         env:
-          - name: twitter4j.debug
-            valueFrom:
-              secretKeyRef:
-                name: twitter
-                key: debug
-          - name: twitter4j.oauth.consumerKey
+          - name: TWITTER_CONSUMER_KEY
             valueFrom:
               secretKeyRef:
                 name: twitter
                 key: consumerKey
-          - name: twitter4j.oauth.consumerSecret
+          - name: TWITTER_CONSUMER_SECRET
             valueFrom:
               secretKeyRef:
                 name: twitter
                 key: consumerSecret
-          - name: twitter4j.oauth.accessToken
+          - name: TWITTER_ACCESS_TOKEN
             valueFrom:
               secretKeyRef:
                 name: twitter
                 key: accessToken
-          - name: twitter4j.oauth.accessTokenSecret
+          - name: TWITTER_ACCESS_TOKEN_SECRET
             valueFrom:
               secretKeyRef:
                 name: twitter
