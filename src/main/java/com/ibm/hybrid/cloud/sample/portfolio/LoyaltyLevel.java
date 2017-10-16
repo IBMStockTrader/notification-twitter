@@ -69,7 +69,7 @@ public class LoyaltyLevel extends Application {
 
 		if (!loyalty.equals(oldLoyalty)) try {
 			tweet(owner, oldLoyalty, loyalty);
-		} catch (Throwable t) { //in case MQ is not configured, just log the exception and continue
+		} catch (Throwable t) { //in case Twitter credentials are not configured, just log the exception and continue
 			t.printStackTrace();
 		}
 
@@ -82,6 +82,8 @@ public class LoyaltyLevel extends Application {
 	/** Get our Twitter object, and a date formatter 
 	 */
 	private void initialize() {
+		System.out.println("Initializing Twitter API");
+
 		ConfigurationBuilder builder = new ConfigurationBuilder();
 		builder.setDebugEnabled(true);
 		builder.setOAuthConsumerKey(System.getenv("TWITTER_CONSUMER_KEY"));
