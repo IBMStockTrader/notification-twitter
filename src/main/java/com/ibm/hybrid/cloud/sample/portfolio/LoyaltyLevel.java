@@ -93,7 +93,7 @@ public class LoyaltyLevel extends Application {
 		twitter = factory.getInstance(); //initialize twitter4j
 
 		//Example: Monday, October 16, 2017 at 3:45 PM
-		format = new SimpleDateFormat("EEEE, MMMM d, yyyy at h:mm a");
+		format = new SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a");
 
 		initialized = true;
 	}
