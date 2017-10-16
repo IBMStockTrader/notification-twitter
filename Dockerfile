@@ -15,3 +15,5 @@
 FROM openliberty/open-liberty:microProfile1
 COPY server.xml /config/server.xml
 COPY target/loyalty-level-1.0-SNAPSHOT.war /config/apps/LoyaltyLevel.war
+COPY key.jks /config/resources/security/key.jks
+COPY ltpa.keys /config/resources/security/ltpa.keys
