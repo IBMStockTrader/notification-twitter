@@ -1,0 +1,3 @@
+# Twitter requires TLS v1.2 for SSL connections to https://api.twitter.com
+# Oddly, this is available by default on my Mac, but not in the Linux Docker VM used in ICp
+-Dhttps.protocols=TLSv1.2
