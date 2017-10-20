@@ -6,7 +6,7 @@ spec:
   match:
     httpHeaders:
       cookie:
-        regex: "^(.*?;)?(user=debug)(;.*)?$"
+        regex: "^(.*?;)?(user=jalcorn@us.ibm.com)(;.*)?$"
   route:
   - tags:
       version: v2
