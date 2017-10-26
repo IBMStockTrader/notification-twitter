@@ -64,7 +64,7 @@ spec:
   type: NodePort
   ports:
     - port: 9080
-      nodePort: 31003
+#     nodePort: 31003
   selector:
     app: loyalty-level
 ---   
