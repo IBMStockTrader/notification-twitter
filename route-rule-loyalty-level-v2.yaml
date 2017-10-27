@@ -1,12 +1,16 @@
-type: route-rule
-name: loyalty-level-debug
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: loyalty-level-id
 spec:
-  destination: loyalty-level.default.svc.cluster.local
+  destination:
+    name: loyalty-level
   precedence: 2
   match:
-    httpHeaders:
-      cookie:
-        regex: "^(.*?;)?(user=jalcorn@us.ibm.com)(;.*)?$"
+    request:
+      headers:
+        cookie:
+          regex: "^(.*?;)?(user=jalcorn@us.ibm.com)(;.*)?$"
   route:
-  - tags:
+  - labels:
       version: v2
