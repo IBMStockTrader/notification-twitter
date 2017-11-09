@@ -23,6 +23,7 @@ spec:
     metadata:
       labels:
         app: loyalty-level
+        solution: stock-trader
         version: v2
     spec:
       containers:
