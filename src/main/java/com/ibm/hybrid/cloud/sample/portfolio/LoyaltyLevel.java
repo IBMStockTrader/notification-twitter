@@ -16,8 +16,14 @@
 
 package com.ibm.hybrid.cloud.sample.portfolio;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+//Logging (JSR 47)
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //JSON-P (JSR 353).  The replaces my old usage of IBM's JSON4J (com.ibm.json.java.JSONObject)
 import javax.json.Json;
@@ -45,6 +51,8 @@ import twitter4j.conf.ConfigurationBuilder;
  *  Also send a notification when status changes for a given user.
  */
 public class LoyaltyLevel extends Application {
+	private static Logger logger = Logger.getLogger(LoyaltyLevel.class.getName());
+
 	private boolean initialized = false;
 	private SimpleDateFormat format = null;
 	private Twitter twitter = null;
@@ -66,11 +74,17 @@ public class LoyaltyLevel extends Application {
 		} else if (total > 10000.00) {
 			loyalty = "Bronze";
 		}
+		logger.fine("Loyalty level = "+loyalty);
 
 		if (!loyalty.equals(oldLoyalty)) try {
+			logger.fine("Change in loyalty level detected");
 			tweet(owner, oldLoyalty, loyalty);
+		} catch (TwitterException te) { //in case Twitter credentials are not configured, just log the exception and continue
+			logger.warning("Unable to send tweet.  Continuing without notification of change in loyalty level.");
+			logException(te);
 		} catch (Throwable t) { //in case Twitter credentials are not configured, just log the exception and continue
-			t.printStackTrace();
+			logger.warning("An unexpected error occurred.  Continuing without notification of change in loyalty level.");
+			logException(t);
 		}
 
 		loyaltyLevel.add("owner", owner);
@@ -82,7 +96,7 @@ public class LoyaltyLevel extends Application {
 	/** Get our Twitter object, and a date formatter 
 	 */
 	private void initialize() {
-		System.out.println("Initializing Twitter API");
+		logger.fine("Initializing Twitter API");
 
 		ConfigurationBuilder builder = new ConfigurationBuilder();
 		builder.setDebugEnabled(true);
@@ -94,9 +108,10 @@ public class LoyaltyLevel extends Application {
 		TwitterFactory factory = new TwitterFactory(builder.build());
 		twitter = factory.getInstance(); //initialize twitter4j
 
-		//Example: Monday, October 16, 2017 at 3:45 PM
+		//Example: Monday, October 16, 2017 at 3:45 PM UTC
 		format = new SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a 'UTC'");
 
+		logger.fine("Initialization completed successfully!");
 		initialized = true;
 	}
 
@@ -109,8 +124,20 @@ public class LoyaltyLevel extends Application {
 		Date now = new Date();
 		String message = "On "+format.format(now)+", "+owner+" changed status from "+oldLoyalty+" to "+loyalty+". #IBMStockTrader";
 
+		logger.fine("Sending following tweet: "+message);
 		twitter.updateStatus(message);
 
-		System.out.println("Message tweeted successfully!");
+		logger.info("Message tweeted successfully!");
+	}
+
+	private static void logException(Throwable t) {
+		logger.warning(t.getClass().getName()+": "+t.getMessage());
+
+		//only log the stack trace if the level has been set to at least FINE
+		if (logger.isLoggable(Level.FINE)) {
+			StringWriter writer = new StringWriter();
+			t.printStackTrace(new PrintWriter(writer));
+			logger.fine(writer.toString());
+		}
 	}
 }
