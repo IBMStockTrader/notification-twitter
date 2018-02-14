@@ -33,6 +33,7 @@ import javax.json.JsonObjectBuilder;
 //JAX-RS 2.0 (JSR 339)
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Path;
@@ -58,6 +59,7 @@ public class NotificationTwitter extends Application {
 
     @POST
     @Path("/")
+	@Consumes("application/json")
 	@Produces("application/json")
 //	@RolesAllowed({"StockTrader", "StockViewer"}) //Couldn't get this to work; had to do it through the web.xml instead :(
 	public JsonObject notifyLoyaltyLevelChange(JsonObject input) {
