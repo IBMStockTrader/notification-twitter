@@ -1,4 +1,4 @@
-<server description="Loyalty Level server">
+<server description="Notification server">
     <featureManager>
         <feature>microProfile-1.2</feature>
         <feature>appSecurity-2.0</feature>
