@@ -33,9 +33,8 @@ import javax.json.JsonObjectBuilder;
 //JAX-RS 2.0 (JSR 339)
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.Path;
 
 //Twitter for Java (Twitter4J)
@@ -67,7 +66,7 @@ public class NotificationTwitter extends Application {
 
 		if (input != null) try {
 			logger.fine("Notifying about change in loyalty level");
-			message = tweet(input.get("owner"), input.get("old"), input.get("new"));
+			message = tweet(input.getString("owner"), input.getString("old"), input.getString("new"));
 		} catch (TwitterException te) { //in case Twitter credentials are not configured, just log the exception and continue
 			logger.warning("Unable to send tweet.  Continuing without notification of change in loyalty level.");
 			logException(te);
@@ -83,7 +82,7 @@ public class NotificationTwitter extends Application {
 		result.add("message", message);
 		result.add("location", "Twitter");
 
-		return loyaltyLevel.build();
+		return result.build();
 	}
 
 	/** Get our Twitter object, and a date formatter 
