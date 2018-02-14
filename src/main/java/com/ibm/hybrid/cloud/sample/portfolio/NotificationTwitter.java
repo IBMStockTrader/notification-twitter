@@ -50,45 +50,38 @@ import twitter4j.conf.ConfigurationBuilder;
 /** Determine loyalty status based on total portfolio value.
  *  Also send a notification when status changes for a given user.
  */
-public class LoyaltyLevel extends Application {
-	private static Logger logger = Logger.getLogger(LoyaltyLevel.class.getName());
+public class NotificationTwitter extends Application {
+	private static Logger logger = Logger.getLogger(NotificationTwitter.class.getName());
 
 	private boolean initialized = false;
 	private SimpleDateFormat format = null;
 	private Twitter twitter = null;
 
-    @GET
+    @POST
     @Path("/")
 	@Produces("application/json")
 //	@RolesAllowed({"StockTrader", "StockViewer"}) //Couldn't get this to work; had to do it through the web.xml instead :(
-	public JsonObject getLoyalty(@QueryParam("owner") String owner, @QueryParam("loyalty") String oldLoyalty, @QueryParam("total") double total) {
-		JsonObjectBuilder loyaltyLevel = Json.createObjectBuilder();
+	public JsonObject notifyLoyaltyLevelChange(JsonObject input) {
+		JsonObjectBuilder result = Json.createObjectBuilder();
+		String message = null;
 
-		String loyalty = "Basic";
-		if (total > 1000000.00) {
-			loyalty = "Platinum";
-		} else if (total > 100000.00) {
-			loyalty = "Gold";
-		} else if (total > 50000.00) {
-			loyalty = "Silver";
-		} else if (total > 10000.00) {
-			loyalty = "Bronze";
-		}
-		logger.fine("Loyalty level = "+loyalty);
-
-		if (!loyalty.equals(oldLoyalty)) try {
-			logger.fine("Change in loyalty level detected");
-			tweet(owner, oldLoyalty, loyalty);
+		if (input != null) try {
+			logger.fine("Notifying about change in loyalty level");
+			message = tweet(input.get("owner"), input.get("old"), input.get("new"));
 		} catch (TwitterException te) { //in case Twitter credentials are not configured, just log the exception and continue
 			logger.warning("Unable to send tweet.  Continuing without notification of change in loyalty level.");
 			logException(te);
+			message = te.getMessage();
 		} catch (Throwable t) { //in case Twitter credentials are not configured, just log the exception and continue
 			logger.warning("An unexpected error occurred.  Continuing without notification of change in loyalty level.");
 			logException(t);
+			message = t.getMessage();
+		} else {
+			message = "No http body provided in call to Notification microservice!";
 		}
 
-		loyaltyLevel.add("owner", owner);
-		loyaltyLevel.add("loyalty", loyalty);
+		result.add("message", message);
+		result.add("location", "Twitter");
 
 		return loyaltyLevel.build();
 	}
@@ -118,7 +111,7 @@ public class LoyaltyLevel extends Application {
 	/** Tweet a message to our @IBMStockTrader account.
 	 * @throws TwitterException 
 	 */
-	private void tweet(String owner, String oldLoyalty, String loyalty) throws TwitterException {
+	private String tweet(String owner, String oldLoyalty, String loyalty) throws TwitterException {
 		if (!initialized) initialize();
 
 		Date now = new Date();
@@ -128,6 +121,7 @@ public class LoyaltyLevel extends Application {
 		twitter.updateStatus(message);
 
 		logger.info("Message tweeted successfully!");
+		return message;
 	}
 
 	private static void logException(Throwable t) {
