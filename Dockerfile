@@ -16,6 +16,6 @@ FROM websphere-liberty:microProfile
 COPY server.xml /config/server.xml
 COPY jvm.options /config/jvm.options
 COPY target/notification-twitter-1.0-SNAPSHOT.war /config/apps/NotificationTwitter.war
-COPY key.jks /output/resources/security/key.jks
+COPY key.jks /config/resources/security/key.jks
 # COPY ltpa.keys /output/resources/security/ltpa.keys
 RUN installUtility install --acceptLicense defaultServer
