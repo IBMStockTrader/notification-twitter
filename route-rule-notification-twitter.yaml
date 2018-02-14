@@ -1,10 +1,10 @@
 apiVersion: config.istio.io/v1alpha2
 kind: RouteRule
 metadata:
-  name: loyalty-level-id
+  name: notification-twitter-id
 spec:
   destination:
-    name: loyalty-level
+    name: notification
   precedence: 2
   match:
     request:
@@ -13,4 +13,4 @@ spec:
           regex: "^(.*?;)?(user=jalcorn@us.ibm.com)(;.*)?$"
   route:
   - labels:
-      version: v2
+      version: twitter
