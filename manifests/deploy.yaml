@@ -71,7 +71,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: notification-twitter-service
+  name: notification-service
   labels:
     app: notification
 spec:
@@ -94,7 +94,7 @@ kind: Ingress
 metadata:
 # annotations:
 #   ingress.kubernetes.io/rewrite-target: /notification
-  name: notification-twitter-ingress
+  name: notification-ingress
 spec:
   rules:
   - http:
