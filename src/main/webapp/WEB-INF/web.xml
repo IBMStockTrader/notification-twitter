@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1" metadata-complete="false">
-	<display-name>Loyalty Level</display-name>
-	<description>Loyalty Level microservice from the Stock Trader application</description>
+	<display-name>Notification</display-name>
+	<description>Notification microservice from the Stock Trader application</description>
 	<login-config>
 		<auth-method>BASIC</auth-method>
 		<realm-name>BluePages</realm-name>
@@ -15,12 +15,12 @@
 		<role-name>StockTrader</role-name>
 	</security-role>
 	<security-constraint>
-		<display-name>Loyalty Level Security</display-name>
+		<display-name>Notification Security</display-name>
 		<web-resource-collection>
-			<web-resource-name>Loyalty Levels</web-resource-name>
+			<web-resource-name>Notifications</web-resource-name>
 			<description>Applies to all paths under the context root</description>
 			<url-pattern>/*</url-pattern>
-			<http-method>GET</http-method>
+			<http-method>POST</http-method>
 		</web-resource-collection>
 		<auth-constraint>
 			<description>Roles allowed to access loyalty levels</description>
