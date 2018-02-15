@@ -16,19 +16,19 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: loyalty-level-v2
+  name: notification-twitter
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: loyalty-level
+        app: notification
         solution: stock-trader
-        version: v2
+        version: twitter
     spec:
       containers:
-      - name: loyalty-level
-        image: loyalty-level-v2:latest
+      - name: notification-twitter
+        image: notification-twitter:latest
         env:
           - name: TWITTER_CONSUMER_KEY
             valueFrom:
@@ -50,37 +50,54 @@ spec:
               secretKeyRef:
                 name: twitter
                 key: accessTokenSecret
+          - name: JWT_AUDIENCE
+            valueFrom:
+              secretKeyRef:
+                name: jwt 
+                key: audience
+          - name: JWT_ISSUER
+            valueFrom:
+              secretKeyRef:
+                name: jwt
+                key: issuer
         ports:
           - containerPort: 9080
+          - containerPort: 9443
         imagePullPolicy: Always
 ---
 #Deploy the service
 apiVersion: v1
 kind: Service
 metadata:
-  name: loyalty-level-service
+  name: notification-twitter-service
   labels:
-    app: loyalty-level
+    app: notification
 spec:
   type: NodePort
   ports:
-    - port: 9080
-#     nodePort: 31003
+    - name: http
+      protocol: TCP
+      port: 9080
+      targetPort: 9080
+    - name: https
+      protocol: TCP
+      port: 9443
+      targetPort: 9443
   selector:
-    app: loyalty-level
+    app: notification
 ---   
 #Configure the ingress 
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
 # annotations:
-#   ingress.kubernetes.io/rewrite-target: /loyalty-level
-  name: loyalty-level-ingress
+#   ingress.kubernetes.io/rewrite-target: /notification
+  name: notification-twitter-ingress
 spec:
   rules:
   - http:
       paths:
-      - path: /loyalty-level
+      - path: /notification
         backend:
-          serviceName: loyalty-level-service
-          servicePort: 9080
+          serviceName: notification-service
+          servicePort: 9443
