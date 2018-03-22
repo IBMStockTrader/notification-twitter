@@ -4,13 +4,13 @@ metadata:
   name: notification-twitter-id
 spec:
   destination:
-    name: notification
+    name: notification-service
   precedence: 2
   match:
     request:
       headers:
-        cookie:
-          regex: "^(.*?;)?(user=jalcorn@us.ibm.com)(;.*)?$"
+        portfolio:
+          exact: "John"
   route:
   - labels:
       version: twitter
