@@ -97,3 +97,6 @@ target/
 
 .gradle/
 build/
+
+# Microclimate
+mc-target
