@@ -28,7 +28,9 @@ spec:
     spec:
       containers:
       - name: notification-twitter
-        image: notification-twitter:latest # Microservice Builder
+#       Note: this manifests/deploy.yaml will be used when we want to deploy this directly using kubectl or a helm chart. 
+#             Microclimate uses the Charts folder so we can actually have both options      
+        image: ibmstocktrader/notification-twitter:latest # Docker Hub
 #       image: mycluster.icp:8500/stock-trader/notification-twitter:latest # IBM Cloud Private
 #       image: registry.ng.bluemix.net/stock_trader/notification-twitter:latest # IBM Container Service
         env:
