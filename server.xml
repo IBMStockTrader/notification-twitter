@@ -1,6 +1,6 @@
 <server description="Notification server">
     <featureManager>
-        <feature>microProfile-1.2</feature>
+        <feature>microProfile-2.0</feature>
         <feature>appSecurity-2.0</feature>
 <!--    <feature>ldapRegistry-3.0</feature> -->
         <feature>logstashCollector-1.0</feature>
@@ -18,6 +18,8 @@
     <ssl id="RpSSLConfig" keyStoreRef="defaultKeyStore" />
 
     <mpJwt id="myMpJwt" audiences="${env.JWT_AUDIENCE}" issuer="${env.JWT_ISSUER}" keyName="default" ignoreApplicationAuthMethod="false"/>
+
+    <mpMetrics authentication="false"/>
 
 <!--
     <logstashCollector source="message,trace,ffdc,accessLog" hostName="logstash" port="5044"/>
