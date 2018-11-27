@@ -18,4 +18,10 @@ COPY jvm.options /config/jvm.options
 COPY target/notification-twitter-1.0-SNAPSHOT.war /config/apps/NotificationTwitter.war
 COPY key.jks /config/resources/security/key.jks
 # COPY ltpa.keys /output/resources/security/ltpa.keys
+
+# Changes recommended from Microclimate troubleshooting
+USER root
+RUN chmod g+w /config/apps
+USER 1001
+
 RUN installUtility install --acceptLicense defaultServer
