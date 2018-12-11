@@ -89,19 +89,3 @@ spec:
       targetPort: 9443
   selector:
     app: notification
----   
-#Configure the ingress 
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-# annotations:
-#   ingress.kubernetes.io/rewrite-target: /notification
-  name: notification-ingress
-spec:
-  rules:
-  - http:
-      paths:
-      - path: /notification
-        backend:
-          serviceName: notification-service
-          servicePort: 9443
