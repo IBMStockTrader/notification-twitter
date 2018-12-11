@@ -74,12 +74,5 @@ service:
       port: 9080
       targetPort: 9080
 
-ingress:
-  enabled: true 
-  path: "/notification"
-  # annotations:
-    #ingress.kubernetes.io/rewrite-target: /notification
-    #nginx.ingress.kubernetes.io/rewrite-target: /notification
-
 monitoring:
   enabled: true
