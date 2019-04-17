@@ -1,4 +1,4 @@
-#       Copyright 2017 IBM Corp All Rights Reserved
+#       Copyright 2017-2019 IBM Corp All Rights Reserved
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ kind: Deployment
 metadata:
   name: notification-twitter
   labels:
-    solution: stock-trader
+    app: stock-trader
   annotations: { 
     prism.subkind: Liberty
   }
@@ -30,6 +30,8 @@ spec:
         app: notification
 #        solution: stock-trader
         version: twitter
+      annotations:
+        prometheus.io/scrape: 'true'
     spec:
       containers:
       - name: notification-twitter
@@ -78,13 +80,13 @@ spec:
             path: /health
             port: 9080
           initialDelaySeconds: 30
-          periodSeconds: 5
+          periodSeconds: 6
         livenessProbe:
           httpGet:
             path: /health
             port: 9080
           initialDelaySeconds: 60
-          periodSeconds: 5
+          periodSeconds: 6
         resources:
           limits:
             cpu: 500m
@@ -102,7 +104,6 @@ metadata:
     app: notification
     solution: stock-trader
 spec:
-  type: NodePort
   ports:
     - name: http
       protocol: TCP
@@ -129,4 +130,4 @@ spec:
     name: notification-twitter
   maxReplicas: 10
   minReplicas: 2
-  targetCPUUtilizationPercentage: 50
+  targetCPUUtilizationPercentage: 60
