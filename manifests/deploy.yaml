@@ -120,7 +120,7 @@ spec:
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: notification-twitter
+  name: notification-twitter-hpa
   labels:
     solution: stock-trader
 spec:
