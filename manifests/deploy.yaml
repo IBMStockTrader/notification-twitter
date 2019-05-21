@@ -32,6 +32,7 @@ spec:
         version: twitter
       annotations:
         prometheus.io/scrape: 'true'
+        prometheus.io/port: "9080"
     spec:
       containers:
       - name: notification-twitter
