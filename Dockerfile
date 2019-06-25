@@ -13,7 +13,7 @@
 #   limitations under the License.
 
 # FROM websphere-liberty:microProfile2
-FROM open-liberty:microProfile2
+FROM openliberty/open-liberty:microProfile2-ubi-min
 
 COPY --chown=1001:0 server.xml /config/server.xml
 COPY --chown=1001:0 jvm.options /config/jvm.options
