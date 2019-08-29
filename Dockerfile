@@ -12,8 +12,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-# FROM websphere-liberty:microProfile2
-FROM openliberty/open-liberty:microProfile2-ubi-min
+# FROM websphere-liberty:microProfile3
+FROM openliberty/open-liberty:microProfile3-ubi-min
 
 COPY --chown=1001:0 server.xml /config/server.xml
 COPY --chown=1001:0 jvm.options /config/jvm.options
