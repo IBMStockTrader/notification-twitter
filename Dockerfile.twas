@@ -24,6 +24,7 @@ COPY --chown=was:root key.jks /config/key.jks
 
 COPY --chown=was:root target/notification-twitter-1.0-SNAPSHOT.war /work/app/NotificationTwitter.war
 COPY --chown=was:root installApp.py /work/config
+COPY --chown=was:root registerTwitterSSLCertificate.py /work/config
 
 ENV ENABLE_BASIC_LOGGING=true
 RUN /work/configure.sh
