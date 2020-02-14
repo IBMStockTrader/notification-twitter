@@ -2,6 +2,7 @@
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1" metadata-complete="false">
 	<display-name>Notification</display-name>
 	<description>Notification microservice from the Stock Trader application</description>
+	<!-- Delete the following login-config stanza if running this on tWAS -->
 	<login-config>
 		<auth-method>MP-JWT</auth-method>
 		<realm-name>MP-JWT</realm-name>
