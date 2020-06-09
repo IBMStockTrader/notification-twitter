@@ -22,8 +22,8 @@ RUN rm /config/server.xml
 COPY --chown=1001:0 server.xml /config/server.xml
 COPY --chown=1001:0 jvm.options /config/jvm.options
 COPY --chown=1001:0 target/notification-twitter-1.0-SNAPSHOT.war /config/apps/NotificationTwitter.war
-COPY --chown=1001:0 key.jks /config/resources/security/key.p12
-COPY --chown=1001:0 key.jks /config/resources/security/trust.p12
+COPY --chown=1001:0 key.p12 /config/resources/security/key.p12
+COPY --chown=1001:0 trust.p12 /config/resources/security/trust.p12
 # COPY --chown=1001:0 ltpa.keys /output/resources/security/ltpa.keys
 
 RUN configure.sh
