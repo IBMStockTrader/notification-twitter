@@ -13,13 +13,18 @@
 #   limitations under the License.
 
 # FROM websphere-liberty:microProfile3
-FROM openliberty/open-liberty:kernel-java11-openj9-ubi
+FROM openliberty/open-liberty:kernel-slim-java11-openj9-ubi
 
 # Following line is a workaround for an issue where sometimes the server somehow loads the built-in server.xml,
 # rather than the one I copy into the image.  That shouldn't be possible, but alas, it appears to be some Docker bug.
 RUN rm /config/server.xml
 
 COPY --chown=1001:0 server.xml /config/server.xml
+
+# This script will add the requested XML snippets to enable Liberty features and grow image to be fit-for-purpose using featureUtility. 
+# Only available in 'kernel-slim'. The 'full' tag already includes all features for convenience.
+RUN features.sh
+
 COPY --chown=1001:0 jvm.options /config/jvm.options
 COPY --chown=1001:0 target/notification-twitter-1.0-SNAPSHOT.war /config/apps/NotificationTwitter.war
 COPY --chown=1001:0 key.p12 /config/resources/security/key.p12
