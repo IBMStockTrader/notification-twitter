@@ -20,7 +20,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import java.util.Map;
 //Logging (JSR 47)
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -90,14 +90,36 @@ public class NotificationTwitter extends Application {
 	/** Get our Twitter object, and a date formatter 
 	 */
 	private void initialize() {
+
+		String consumerKey = null;
+		String consumerSecret = null;
+		String accessToken = null;
+		String accessTokenSecret = null;
+
 		logger.fine("Initializing Twitter API");
+
+		if (Boolean.valueOf(System.getenv("VAULT_ENABLED"))) try {
+			VaultDriver vaultDriver = new VaultDriver();
+			Map<String, String> secrets = vaultDriver.getDriver().logical().read("ceh/database/credentials").getData();
+			consumerKey = secrets.get("consumerKey");
+			consumerSecret = secrets.get("consumerSecret");
+			accessToken = secrets.get("accessToken");
+			accessTokenSecret = secrets.get("accessTokenSecret");
+		} catch (Throwable t) {
+			logException(t);
+		} else {
+			consumerKey = System.getenv("TWITTER_CONSUMER_KEY");
+			consumerSecret = System.getenv("TWITTER_CONSUMER_SECRET");
+			accessToken = System.getenv("TWITTER_ACCESS_TOKEN");
+			accessTokenSecret = System.getenv("TWITTER_ACCESS_TOKEN_SECRET");
+		}
 
 		ConfigurationBuilder builder = new ConfigurationBuilder();
 		builder.setDebugEnabled(true);
-		builder.setOAuthConsumerKey(System.getenv("TWITTER_CONSUMER_KEY"));
-		builder.setOAuthConsumerSecret(System.getenv("TWITTER_CONSUMER_SECRET"));
-		builder.setOAuthAccessToken(System.getenv("TWITTER_ACCESS_TOKEN"));
-		builder.setOAuthAccessTokenSecret(System.getenv("TWITTER_ACCESS_TOKEN_SECRET"));
+		builder.setOAuthConsumerKey(consumerKey);
+		builder.setOAuthConsumerSecret(consumerSecret);
+		builder.setOAuthAccessToken(accessToken);
+		builder.setOAuthAccessTokenSecret(accessTokenSecret);
 
 		TwitterFactory factory = new TwitterFactory(builder.build());
 		twitter = factory.getInstance(); //initialize twitter4j
