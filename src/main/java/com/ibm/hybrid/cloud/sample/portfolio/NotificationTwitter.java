@@ -100,7 +100,7 @@ public class NotificationTwitter extends Application {
 
 		if (Boolean.valueOf(System.getenv("VAULT_ENABLED"))) try {
 			VaultDriver vaultDriver = new VaultDriver();
-			Map<String, String> secrets = vaultDriver.getDriver().logical().read("ceh/database/credentials").getData();
+			Map<String, String> secrets = vaultDriver.getDriver().logical().read(System.getenv("VAULT_PATH")).getData();
 			consumerKey = secrets.get("consumerKey");
 			consumerSecret = secrets.get("consumerSecret");
 			accessToken = secrets.get("accessToken");
