@@ -13,10 +13,10 @@
 
 <server description="Notification server">
     <featureManager>
-        <feature>microProfile-4.0</feature>
+        <feature>microProfile-4.1</feature>
         <feature>monitor-1.0</feature>
         <feature>appSecurity-2.0</feature>
-<!--    <feature>ldapRegistry-3.0</feature>.     -->
+<!--    <feature>ldapRegistry-3.0</feature>      -->
 <!--    <feature>logstashCollector-1.0</feature> -->
     </featureManager>
 
