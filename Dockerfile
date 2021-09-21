@@ -13,13 +13,13 @@
 #   limitations under the License.
 
 # FROM websphere-liberty:microProfile3
-FROM openliberty/open-liberty:kernel-slim-java11-openj9-ubi
+FROM openliberty/open-liberty:21.0.0.9-full-java11-openj9-ubi
 
 COPY --chown=1001:0 server.xml /config/server.xml
 
 # This script will add the requested XML snippets to enable Liberty features and grow image to be fit-for-purpose using featureUtility. 
 # Only available in 'kernel-slim'. The 'full' tag already includes all features for convenience.
-RUN features.sh
+# RUN features.sh
 
 COPY --chown=1001:0 jvm.options /config/jvm.options
 COPY --chown=1001:0 target/notification-twitter-1.0-SNAPSHOT.war /config/apps/NotificationTwitter.war
