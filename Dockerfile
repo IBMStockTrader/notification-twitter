@@ -1,4 +1,4 @@
-#       Copyright 2017-2021 IBM Corp All Rights Reserved
+#       Copyright 2017-2022 IBM Corp All Rights Reserved
 
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 #   limitations under the License.
 
 # FROM websphere-liberty:microProfile3
-FROM openliberty/open-liberty:21.0.0.9-full-java11-openj9-ubi
+FROM openliberty/open-liberty:21.0.0.12-full-java11-openj9-ubi
 
 COPY --chown=1001:0 server.xml /config/server.xml
 
