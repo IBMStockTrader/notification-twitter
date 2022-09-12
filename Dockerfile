@@ -13,7 +13,7 @@
 #   limitations under the License.
 
 # FROM websphere-liberty:microProfile3
-FROM openliberty/open-liberty:22.0.0.6-full-java17-openj9-ubi
+FROM openliberty/open-liberty:22.0.0.9-full-java17-openj9-ubi
 
 COPY --chown=1001:0 server.xml /config/server.xml
 
