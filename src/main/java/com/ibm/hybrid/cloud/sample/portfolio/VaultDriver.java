@@ -6,10 +6,11 @@ import java.util.Scanner;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.bettercloud.vault.Vault;
-import com.bettercloud.vault.VaultConfig;
-import com.bettercloud.vault.VaultException;
-import com.bettercloud.vault.response.AuthResponse;
+//jwa: switched from no-longer-maintained com.bettercloud.vault to io.github.jopenlibs.vault version
+import io.github.jopenlibs.vault.Vault;
+import io.github.jopenlibs.vault.VaultConfig;
+import io.github.jopenlibs.vault.VaultException;
+import io.github.jopenlibs.vault.response.AuthResponse;
 
 @ApplicationScoped
 public class VaultDriver {
