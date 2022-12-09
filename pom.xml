@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-       Copyright 2017-2020 IBM Corp All Rights Reserved
+       Copyright 2017-2022 IBM Corp All Rights Reserved
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.twitter4j</groupId>
             <artifactId>twitter4j-core</artifactId>
-            <version>[4.0,)</version>
+            <version>4.0.7</version> <!-- Note code doesn't compile against 4.1.x -->
         </dependency>
         <dependency> 
             <groupId>org.eclipse.microprofile</groupId> 
